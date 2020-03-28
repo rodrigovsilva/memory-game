@@ -127,7 +127,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(
             NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String error = ExceptionMessages.NO_HANDLER_FOOUND_ERROR.getMessage(ex.getHttpMethod(), ex.getRequestURL());
+        String error = ExceptionMessages.NO_HANDLER_FOUND_ERROR.getMessage(ex.getHttpMethod(), ex.getRequestURL());
         LOGGER.error(error, ex);
         ApiErrorDTO apiError = new ApiErrorDTO(HttpStatus.NOT_FOUND, ex.getMessage(), error);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

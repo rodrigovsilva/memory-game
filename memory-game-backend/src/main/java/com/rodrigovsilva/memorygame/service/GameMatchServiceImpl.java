@@ -58,6 +58,7 @@ public class GameMatchServiceImpl implements GameMatchService {
 
         final PlayerDTO playerDTO = null;
         optionalExistingPlayer.ifPresentOrElse(player -> {
+            LOGGER.info(ExceptionMessages.PLAYER_ALREADY_EXISTS.getMessage(newPlayer.getName()));
             throw new PlayerAlreadyExistsException(ExceptionMessages.PLAYER_ALREADY_EXISTS.getMessage(newPlayer.getName()));
         }, () -> {
             Player createdPlayer = playerRepository.save(Player.Builder.builder().id(newPlayer.getId()).name(newPlayer.getName()).build());

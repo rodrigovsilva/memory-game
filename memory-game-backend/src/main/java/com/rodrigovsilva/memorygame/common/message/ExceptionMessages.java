@@ -19,30 +19,26 @@ public enum ExceptionMessages {
 
     PARAMETER_IS_MISSING("exception.parameter_is_missing"),
 
-    NO_HANDLER_FOOUND_ERROR("exception.no_handler_found_error"),
+    NO_HANDLER_FOUND_ERROR("exception.no_handler_found_error"),
 
     PLAYER_ALREADY_EXISTS("business.exception.player_already_exists");
-
-    private String message;
 
     private static ResourceBundle bundle;
 
     private String key;
 
-    ExceptionMessages(String message) {
-        this.message = message;
+    ExceptionMessages(String key) {
+        this.key = key;
     }
 
     public String getMessage() {
         if (bundle == null) {
-            bundle = ResourceBundle.getBundle(AppConstants.RESOURCE_BUNDLE_BASENAME, Locale.getDefault());
+            bundle = ResourceBundle.getBundle(AppConstants.RESOURCE_BUNDLE_EXCEPTIONS, Locale.getDefault());
         }
         return bundle.getString(this.key);
     }
 
     public String getMessage(Object... arguments) {
-        return MessageFormat.format(getMessage(key), arguments);
+        return MessageFormat.format(getMessage(), arguments);
     }
-
-
 }

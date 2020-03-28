@@ -8,11 +8,16 @@ package com.rodrigovsilva.memorygame.common.constant;
 public final class AppConstants {
 
     /**
-     * base resource bundle name.
+     * Base resource bundle name.
      */
     public static final String RESOURCE_BUNDLE_BASENAME = "messages";
 
-    private AppConstants(){
+    /**
+     * Exceptions resource bundle
+     */
+    public static final String RESOURCE_BUNDLE_EXCEPTIONS = "exceptions";
+
+    private AppConstants() {
 
     }
 }
