@@ -17,6 +17,16 @@ public final class AppConstants {
      */
     public static final String RESOURCE_BUNDLE_EXCEPTIONS = "exceptions";
 
+    /**
+     * Default value of number of cards on a game.
+     */
+    public static final Integer DEFAULT_GAME_NUMBER_OF_CARDS = 4;
+
+    /**
+     * Max number of a card
+     */
+    public static final Integer MAX_CARD_NUMBER = 99;
+
     private AppConstants() {
 
     }

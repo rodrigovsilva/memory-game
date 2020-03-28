@@ -28,7 +28,7 @@ public class MemoryGameApplication {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasenames("classpath:messages", "classpath:validation-messages");
+        messageSource.setBasenames("classpath:exception", "classpath:messages", "classpath:validation-messages");
         messageSource.setUseCodeAsDefaultMessage(false);
         messageSource.setCacheSeconds((int) TimeUnit.MINUTES.toSeconds(5));
         messageSource.setFallbackToSystemLocale(false);

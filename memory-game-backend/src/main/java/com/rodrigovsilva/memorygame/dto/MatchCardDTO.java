@@ -28,23 +28,23 @@ public class MatchCardDTO implements Serializable {
     }
 
 
-    public static final class MatchCardDTOBuilder {
+    public static final class Builder {
         private Integer position;
         private Integer number;
 
-        private MatchCardDTOBuilder() {
+        private Builder() {
         }
 
-        public static MatchCardDTOBuilder builder() {
-            return new MatchCardDTOBuilder();
+        public static Builder builder() {
+            return new Builder();
         }
 
-        public MatchCardDTOBuilder withPosition(Integer position) {
+        public Builder position(Integer position) {
             this.position = position;
             return this;
         }
 
-        public MatchCardDTOBuilder withNumber(Integer number) {
+        public Builder number(Integer number) {
             this.number = number;
             return this;
         }

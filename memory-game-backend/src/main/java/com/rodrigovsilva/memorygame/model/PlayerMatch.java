@@ -1,10 +1,12 @@
 package com.rodrigovsilva.memorygame.model;
 
+import com.rodrigovsilva.memorygame.dto.MatchCardDTO;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * This entity represents all information about a player match.
@@ -27,13 +29,18 @@ public class PlayerMatch {
 
     @NotNull
     @Column(name = "total_cards")
-    private Long totalCards;
+    private Integer totalCards;
 
     @NotNull
     @Column(name = "created_at", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Calendar createdAt;
+
+    @OneToMany(targetEntity = MatchCard.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_match_id", foreignKey = @ForeignKey(name = "FK_MATCH_CARD_TO_PLAYER_MATCH"))
+    @NotNull
+    public List<MatchCard> matchCards;
 
     public PlayerMatch() {
     }
@@ -54,11 +61,11 @@ public class PlayerMatch {
         this.player = player;
     }
 
-    public Long getTotalCards() {
+    public Integer getTotalCards() {
         return totalCards;
     }
 
-    public void setTotalCards(Long totalCards) {
+    public void setTotalCards(Integer totalCards) {
         this.totalCards = totalCards;
     }
 
@@ -68,5 +75,49 @@ public class PlayerMatch {
 
     public void setCreatedAt(Calendar createdAt) {
         this.createdAt = createdAt;
+    }
+
+
+    public static final class Builder {
+        private Long id;
+        private Player player;
+        private Integer totalCards;
+        private Calendar createdAt;
+
+        private Builder() {
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder player(Player player) {
+            this.player = player;
+            return this;
+        }
+
+        public Builder totalCards(Integer totalCards) {
+            this.totalCards = totalCards;
+            return this;
+        }
+
+        public Builder createdAt(Calendar createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public PlayerMatch build() {
+            PlayerMatch playerMatch = new PlayerMatch();
+            playerMatch.setId(id);
+            playerMatch.setPlayer(player);
+            playerMatch.setTotalCards(totalCards);
+            playerMatch.setCreatedAt(createdAt);
+            return playerMatch;
+        }
     }
 }

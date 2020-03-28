@@ -1,6 +1,7 @@
 package com.rodrigovsilva.memorygame.dto;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Data transfer object for all player matches.
@@ -11,7 +12,7 @@ public class PlayerMatchDTO {
 
     private PlayerDTO player;
 
-    private Long totalCards;
+    private Integer totalCards;
 
     private Calendar createdAt;
 
@@ -31,11 +32,13 @@ public class PlayerMatchDTO {
         this.player = player;
     }
 
-    public Long getTotalCards() {
+    public Integer getTotalCards() {
         return totalCards;
     }
 
-    public void setTotalCards(Long totalCards) {
+    public List<MatchCardDTO> matchCards;
+
+    public void setTotalCards(Integer totalCards) {
         this.totalCards = totalCards;
     }
 
@@ -47,39 +50,50 @@ public class PlayerMatchDTO {
         this.createdAt = createdAt;
     }
 
-    /**
-     * Inner builder for player matches.
-     */
-    public static final class PlayerMatchDTOBuilder {
+    public List<MatchCardDTO> getMatchCards() {
+        return matchCards;
+    }
+
+    public void setMatchCards(List<MatchCardDTO> matchCards) {
+        this.matchCards = matchCards;
+    }
+
+    public static final class Builder {
         private Long id;
         private PlayerDTO player;
-        private Long totalCards;
+        private Integer totalCards;
         private Calendar createdAt;
+        public List<MatchCardDTO> matchCards;
 
-        private PlayerMatchDTOBuilder() {
+        private Builder() {
         }
 
-        public static PlayerMatchDTOBuilder builder() {
-            return new PlayerMatchDTOBuilder();
+        public static Builder builder() {
+            return new Builder();
         }
 
-        public PlayerMatchDTOBuilder withId(Long id) {
+        public Builder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public PlayerMatchDTOBuilder withPlayer(PlayerDTO player) {
+        public Builder player(PlayerDTO player) {
             this.player = player;
             return this;
         }
 
-        public PlayerMatchDTOBuilder withTotalCards(Long totalCards) {
+        public Builder totalCards(Integer totalCards) {
             this.totalCards = totalCards;
             return this;
         }
 
-        public PlayerMatchDTOBuilder withCreatedAt(Calendar createdAt) {
+        public Builder createdAt(Calendar createdAt) {
             this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder matchCards(List<MatchCardDTO> matchCards) {
+            this.matchCards = matchCards;
             return this;
         }
 
@@ -89,6 +103,7 @@ public class PlayerMatchDTO {
             playerMatchDTO.setPlayer(player);
             playerMatchDTO.setTotalCards(totalCards);
             playerMatchDTO.setCreatedAt(createdAt);
+            playerMatchDTO.setMatchCards(matchCards);
             return playerMatchDTO;
         }
     }

@@ -65,4 +65,33 @@ public class MatchCard {
     public void setPlayerMatch(PlayerMatch playerMatch) {
         this.playerMatch = playerMatch;
     }
+
+    public static final class Builder {
+        private Integer position;
+        private Integer number;
+
+        private Builder() {
+        }
+
+        public static MatchCard.Builder builder() {
+            return new MatchCard.Builder();
+        }
+
+        public MatchCard.Builder position(Integer position) {
+            this.position = position;
+            return this;
+        }
+
+        public MatchCard.Builder number(Integer number) {
+            this.number = number;
+            return this;
+        }
+
+        public MatchCard build() {
+            MatchCard matchCard = new MatchCard();
+            matchCard.setPosition(position);
+            matchCard.setNumber(number);
+            return matchCard;
+        }
+    }
 }
