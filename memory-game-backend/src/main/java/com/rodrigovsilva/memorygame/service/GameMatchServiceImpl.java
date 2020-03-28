@@ -39,6 +39,11 @@ public class GameMatchServiceImpl implements GameMatchService {
     @Autowired
     PlayerRepository playerRepository;
 
+    @Autowired
+    public GameMatchServiceImpl(PlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
+    }
+
     /**
      * Default constructor.
      */
@@ -51,13 +56,15 @@ public class GameMatchServiceImpl implements GameMatchService {
 
         Optional<Player> optionalExistingPlayer = playerRepository.findByName(newPlayer.getName());
 
+        final PlayerDTO playerDTO = null;
         optionalExistingPlayer.ifPresentOrElse(player -> {
             throw new PlayerAlreadyExistsException(ExceptionMessages.PLAYER_ALREADY_EXISTS.getMessage(newPlayer.getName()));
         }, () -> {
-            playerRepository.save(Player.Builder.builder().id(newPlayer.getId()).name(newPlayer.getName()).build());
+            Player createdPlayer = playerRepository.save(Player.Builder.builder().id(newPlayer.getId()).name(newPlayer.getName()).build());
+            newPlayer.setId(createdPlayer.getId());
         });
 
-        return null;
+        return newPlayer;
     }
 
     @Override

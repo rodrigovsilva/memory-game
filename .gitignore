@@ -1,3 +1,4 @@
-memory-game-backend/target/**
-memory-game-backend/log/**
-memory-game-backend/.idea/**
+.history/*
+memory-game-backend/target
+memory-game-backend/.idea
+memory-game-backend/logs
