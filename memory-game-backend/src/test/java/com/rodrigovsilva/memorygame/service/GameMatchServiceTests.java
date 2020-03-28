@@ -1,0 +1,55 @@
+package com.rodrigovsilva.memorygame.service;
+
+import com.rodrigovsilva.memorygame.dto.PlayerDTO;
+import com.rodrigovsilva.memorygame.model.Player;
+import com.rodrigovsilva.memorygame.repository.PlayerMatchRepository;
+import com.rodrigovsilva.memorygame.repository.PlayerRepository;
+import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class GameMatchServiceTests {
+
+    @Mock
+    private PlayerMatchRepository playerMatchRepository;
+
+    @Mock
+    private PlayerRepository playerRepository;
+
+
+    @InjectMocks
+    private GameMatchService gameMatchService;
+
+    @Test
+    public void whenCreateNewPlayerSuccesfully() {
+
+        final Long id = 1L;
+        final String name = "Rodrigo";
+
+        final Player player = Player.Builder.builder().id(id).name(name).build();
+        final PlayerDTO playerDTO = PlayerDTO.Builder.builder().id(1L).name(name).build();
+
+        // creating user
+        given(playerRepository.findByName(name)).willReturn(Optional.empty());
+        given(playerRepository.save(player)).willAnswer(invocation -> invocation.getArgument(0));
+
+        PlayerDTO createdPlayer = gameMatchService.createNewPlayer(playerDTO);
+
+        assertThat(createdPlayer).isNotNull();
+
+        verify(playerRepository).save(any(Player.class));
+    }
+}

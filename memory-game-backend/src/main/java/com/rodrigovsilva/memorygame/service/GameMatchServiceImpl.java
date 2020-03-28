@@ -1,11 +1,14 @@
 
 package com.rodrigovsilva.memorygame.service;
 
+import com.rodrigovsilva.memorygame.common.message.ExceptionMessages;
 import com.rodrigovsilva.memorygame.dto.PlayerDTO;
 import com.rodrigovsilva.memorygame.dto.PlayerMatchDTO;
+import com.rodrigovsilva.memorygame.exception.PlayerAlreadyExistsException;
 import com.rodrigovsilva.memorygame.model.Player;
 import com.rodrigovsilva.memorygame.model.PlayerMatch;
 import com.rodrigovsilva.memorygame.repository.PlayerMatchRepository;
+import com.rodrigovsilva.memorygame.repository.PlayerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,9 @@ public class GameMatchServiceImpl implements GameMatchService {
     @Autowired
     PlayerMatchRepository playerMatchRepository;
 
+    @Autowired
+    PlayerRepository playerRepository;
+
     /**
      * Default constructor.
      */
@@ -41,7 +47,16 @@ public class GameMatchServiceImpl implements GameMatchService {
     }
 
     @Override
-    public PlayerDTO createNewPlayer(PlayerDTO newPlayer) {
+    public PlayerDTO createNewPlayer(PlayerDTO newPlayer) throws PlayerAlreadyExistsException {
+
+        Optional<Player> optionalExistingPlayer = playerRepository.findByName(newPlayer.getName());
+
+        optionalExistingPlayer.ifPresentOrElse(player -> {
+            throw new PlayerAlreadyExistsException(ExceptionMessages.PLAYER_ALREADY_EXISTS.getMessage(newPlayer.getName()));
+        }, () -> {
+            playerRepository.save(Player.Builder.builder().id(newPlayer.getId()).name(newPlayer.getName()).build());
+        });
+
         return null;
     }
 
@@ -55,15 +70,14 @@ public class GameMatchServiceImpl implements GameMatchService {
             List<PlayerMatch> playerMatches = optionalPlayerMatches.get();
 
             return playerMatches.stream().map(playerMatch -> {
-                PlayerDTO player1 = PlayerDTO.PlayerDTOBuilder.builder()//
-                        .withId(playerMatch.getPlayer().getId()) //
-                        .withName(playerMatch.getPlayer().getName())//
+                PlayerDTO player1 = PlayerDTO.Builder.builder()//
+                        .id(playerMatch.getPlayer().getId()) //
+                        .name(playerMatch.getPlayer().getName())//
                         .build();
 
                 return PlayerMatchDTO.PlayerMatchDTOBuilder.builder()//
                         .withId(playerMatch.getId())//
                         .withPlayer(player1)//
-                        .withTurns(playerMatch.getTurns())
                         .withTotalCards(playerMatch.getTotalCards())
                         .withCreatedAt(playerMatch.getCreatedAt())
                         .build();

@@ -26,10 +26,6 @@ public class PlayerMatch {
     private Player player;
 
     @NotNull
-    @Column(name = "turns")
-    private Long turns;
-
-    @NotNull
     @Column(name = "total_cards")
     private Long totalCards;
 
@@ -56,14 +52,6 @@ public class PlayerMatch {
 
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    public Long getTurns() {
-        return turns;
-    }
-
-    public void setTurns(Long turns) {
-        this.turns = turns;
     }
 
     public Long getTotalCards() {

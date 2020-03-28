@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 
 /**
- * An exception to be thrown when an operation was requested on a non-existing knowledge base article.
+ * An exception to be thrown when an operation was requested.
  *
  * @author Rodrigo Silva
  */

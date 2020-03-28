@@ -13,15 +13,15 @@ import java.util.ResourceBundle;
  */
 public enum ExceptionMessages {
 
-    GENERAL_ERROR("ERR-001", "exception.general_error"),
+    GENERAL_ERROR("exception.general_error"),
 
-    INVALID_ARGUMENTS("ERR-002", "exception.invalid_arguments"),
+    INVALID_ARGUMENTS("exception.invalid_arguments"),
 
-    PARAMETER_IS_MISSING("ERR-003", "exception.parameter_is_missing"),
+    PARAMETER_IS_MISSING("exception.parameter_is_missing"),
 
-    NO_HANDLER_FOOUND_ERROR("ERR-004", "exception.no_handler_found_error");
+    NO_HANDLER_FOOUND_ERROR("exception.no_handler_found_error"),
 
-    private String code;
+    PLAYER_ALREADY_EXISTS("business.exception.player_already_exists");
 
     private String message;
 
@@ -29,8 +29,7 @@ public enum ExceptionMessages {
 
     private String key;
 
-    ExceptionMessages(String code, String message) {
-        this.code = code;
+    ExceptionMessages(String message) {
         this.message = message;
     }
 
@@ -43,11 +42,6 @@ public enum ExceptionMessages {
 
     public String getMessage(Object... arguments) {
         return MessageFormat.format(getMessage(key), arguments);
-    }
-
-
-    public String getCode() {
-        return code;
     }
 
 

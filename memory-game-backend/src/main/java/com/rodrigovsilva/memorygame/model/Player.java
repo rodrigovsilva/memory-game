@@ -50,4 +50,30 @@ public class Player {
         this.name = name;
     }
 
+
+    public static final class Builder {
+        private Player player;
+
+        private Builder() {
+            player = new Player();
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public Builder id(Long id) {
+            player.setId(id);
+            return this;
+        }
+
+        public Builder name(String name) {
+            player.setName(name);
+            return this;
+        }
+
+        public Player build() {
+            return player;
+        }
+    }
 }

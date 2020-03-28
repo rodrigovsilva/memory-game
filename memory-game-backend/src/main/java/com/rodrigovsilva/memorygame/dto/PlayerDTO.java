@@ -29,35 +29,29 @@ public class PlayerDTO implements Serializable {
         this.name = name;
     }
 
-    /**
-     * Inner builder for player DTO
-     */
-    public static final class PlayerDTOBuilder {
-        private Long id;
-        private String name;
+    public static final class Builder {
+        private PlayerDTO player;
 
-        private PlayerDTOBuilder() {
+        private Builder() {
+            player = new PlayerDTO();
         }
 
-        public static PlayerDTOBuilder builder() {
-            return new PlayerDTOBuilder();
+        public static PlayerDTO.Builder builder() {
+            return new PlayerDTO.Builder();
         }
 
-        public PlayerDTOBuilder withId(Long id) {
-            this.id = id;
+        public PlayerDTO.Builder id(Long id) {
+            player.setId(id);
             return this;
         }
 
-        public PlayerDTOBuilder withName(String name) {
-            this.name = name;
+        public PlayerDTO.Builder name(String name) {
+            player.setName(name);
             return this;
         }
 
         public PlayerDTO build() {
-            PlayerDTO playerDTO = new PlayerDTO();
-            playerDTO.setId(id);
-            playerDTO.setName(name);
-            return playerDTO;
+            return player;
         }
     }
 }

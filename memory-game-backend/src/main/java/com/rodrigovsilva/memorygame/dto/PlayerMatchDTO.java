@@ -11,8 +11,6 @@ public class PlayerMatchDTO {
 
     private PlayerDTO player;
 
-    private Long turns;
-
     private Long totalCards;
 
     private Calendar createdAt;
@@ -31,14 +29,6 @@ public class PlayerMatchDTO {
 
     public void setPlayer(PlayerDTO player) {
         this.player = player;
-    }
-
-    public Long getTurns() {
-        return turns;
-    }
-
-    public void setTurns(Long turns) {
-        this.turns = turns;
     }
 
     public Long getTotalCards() {
@@ -63,7 +53,6 @@ public class PlayerMatchDTO {
     public static final class PlayerMatchDTOBuilder {
         private Long id;
         private PlayerDTO player;
-        private Long turns;
         private Long totalCards;
         private Calendar createdAt;
 
@@ -84,11 +73,6 @@ public class PlayerMatchDTO {
             return this;
         }
 
-        public PlayerMatchDTOBuilder withTurns(Long turns) {
-            this.turns = turns;
-            return this;
-        }
-
         public PlayerMatchDTOBuilder withTotalCards(Long totalCards) {
             this.totalCards = totalCards;
             return this;
@@ -103,7 +87,6 @@ public class PlayerMatchDTO {
             PlayerMatchDTO playerMatchDTO = new PlayerMatchDTO();
             playerMatchDTO.setId(id);
             playerMatchDTO.setPlayer(player);
-            playerMatchDTO.setTurns(turns);
             playerMatchDTO.setTotalCards(totalCards);
             playerMatchDTO.setCreatedAt(createdAt);
             return playerMatchDTO;
