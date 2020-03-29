@@ -47,6 +47,9 @@ public class PlayerMatch {
     @JoinColumn(name = "player_match_id", foreignKey = @ForeignKey(name = "FK_MATCH_CARD_TO_PLAYER_MATCH"))
     public Set<MatchCard> matchCards;
 
+    @Column(name = "victory", nullable = true)
+    public Boolean victory;
+
     public PlayerMatch() {
         this.matchCards = new TreeSet<>((t, t1) -> t.getPosition().compareTo(t1.getPosition()));
     }
@@ -94,12 +97,21 @@ public class PlayerMatch {
         }
     }
 
+    public Boolean getVictory() {
+        return victory;
+    }
+
+    public void setVictory(Boolean victory) {
+        this.victory = victory;
+    }
+
     public static final class Builder {
         public Set<MatchCard> matchCards;
         private Long id;
         private Player player;
         private Integer totalCards;
         private Calendar createdAt;
+        private Boolean victory;
 
         private Builder() {
         }
@@ -133,6 +145,11 @@ public class PlayerMatch {
             return this;
         }
 
+        public Builder victory(Boolean victory) {
+            this.victory = victory;
+            return this;
+        }
+
         public PlayerMatch build() {
             PlayerMatch playerMatch = new PlayerMatch();
             playerMatch.setId(id);
@@ -140,6 +157,7 @@ public class PlayerMatch {
             playerMatch.setTotalCards(totalCards);
             playerMatch.setCreatedAt(createdAt);
             playerMatch.setMatchCards(matchCards);
+            playerMatch.setVictory(victory);
             return playerMatch;
         }
     }

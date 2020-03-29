@@ -1,6 +1,6 @@
 import GameService from '../../services/game.service';
-import {CREATE_NEW_GAME} from '../action.type';
-import {GAME_CREATED} from '../mutation.type';
+import {CHECK_CARDS, CREATE_NEW_GAME} from '../action.type';
+import {CARDS_CHECKED, GAME_CREATED} from '../mutation.type';
 
 import Vue from 'vue';
 
@@ -20,11 +20,24 @@ export const actions = {
                 }
             })
             .catch((error) => {
-                console.log('error', error);
-
-                throw new Error(error);
+                throw new Error(error.data.details);
             });
     },
+
+    [CHECK_CARDS]({commit}, playerMatch) {
+        return GameService.checkCards(playerMatch)
+            .then(response => {
+                if(response.data.errors) {
+                    throw new Error(response.data.details)
+                } else if (response.data) {
+                    commit(CARDS_CHECKED, response.data);
+                }
+            })
+            .catch((error) => {
+                throw new Error(error.data.details);
+            });
+    },
+
 
 };
 
@@ -37,6 +50,9 @@ export const mutations = {
 
     },
 
+    [CARDS_CHECKED](currentState, gamePlay) {
+        Vue.set(currentState, 'playerMatch', gamePlay.playerMatch);
+    },
 };
 
 export default {

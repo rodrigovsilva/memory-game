@@ -31,13 +31,19 @@
                     </h2>
                 </div>
                 <v-divider class="game-content-divider"></v-divider>
-                Selected Cards: {{selectedCards}}
+                <h3>Click on the cards in ascending order of the numbers that are on the other side.</h3>
+                <v-label>Selected Cards Order:</v-label>
+                {{selectedCards}}
                 <v-container fluid v-if="this.playerMatch.matchCards">
                     <v-btn-toggle v-model="selectedCards" multiple class="cards-group">
                         <v-row no-gutters>
                             <template v-for="card in this.playerMatch.matchCards">
                                 <v-col class="cards-column" :key="card.position">
-                                    <v-btn class="card-custom" >{{card.position}}</v-btn>
+                                    <v-btn class="card-custom" v-if="showCardNumber" disabled>{{card.number}}</v-btn>
+                                    <v-btn class="card-custom" v-if="!showCardNumber" :disabled="disableCards">
+                                        {{card.position}}
+                                    </v-btn>
+
                                 </v-col>
                                 <v-responsive
                                         v-if="((card.position+1) % 4) == 0"
@@ -49,43 +55,96 @@
                     </v-btn-toggle>
                 </v-container>
                 <v-divider class="game-content-divider"></v-divider>
-                <v-flex xs8 offset-xs2>
-                    <v-btn color="primary" @click="checkCards()">Check Cards</v-btn>
+                <v-flex xs8 offset-xs2 v-if="!gameEnded">
+                    <v-btn color="primary" @click="playGame()" v-if="showCardNumber">Play Game</v-btn>
+                    <v-btn color="primary" @click="checkCards()" v-if="!showCardNumber">Check Cards</v-btn>
                 </v-flex>
-
+                <v-flex xs8 offset-xs2 v-if="gameEnded">
+                    <h3 class="text-uppercase">{{resultText}}</h3>
+                    <v-btn :color="resultColor" @click="createNewGame()" v-show="gameEnded">New Match</v-btn>
+                    <div v-show="gameEnded">Do you want to start as a new player? <a @click="resetGame()">Click here</a>
+                    </div>
+                </v-flex>
             </v-flex>
         </v-layout>
     </v-container>
 </template>
 
 <script>
+    import {CHECK_CARDS, CREATE_NEW_GAME} from "../store/action.type";
+
     export default {
         data: () => ({
             form: {
                 player: {
                     name: ''
                 },
-                totalCards: 12,
+                totalCards: 4,
             },
             player: null,
             playerMatch: null,
             alert: null,
-            selectedCards: []
+            selectedCards: [],
+            showCardNumber: true
         }),
         methods: {
             createNewGame() {
-                this.$store.dispatch("CREATE_NEW_GAME", this.form).then(() => {
+                this.$store.dispatch(CREATE_NEW_GAME, this.form).then(() => {
                     this.player = this.$store.state.game.player;
                     this.playerMatch = this.$store.state.game.playerMatch;
+
                 }).catch(error => {
                     this.alert = error.message;
                 });
             },
-            checkCards() {
-
+            playGame() {
+                this.showCardNumber = false;
             },
+            checkCards() {
+                let gamePlay = {
+                    selectedCards: this.selectedCards,
+                    playerMatch: this.playerMatch
+                }
+                this.$store.dispatch(CHECK_CARDS, gamePlay).then(() => {
+                    this.player = this.$store.state.game.player;
+                    this.playerMatch = this.$store.state.game.playerMatch;
+                    this.showCardNumber = true;
+
+                }).catch(error => {
+                    this.alert = error.message;
+                });
+            },
+            resetGame() {
+
+                this.form = {
+                    player: {
+                        name: ''
+                    },
+                    totalCards: 4,
+                }, this.player = null,
+                    this.playerMatch = null,
+                    this.alert = null,
+                    this.selectedCards = [],
+                    this.showCardNumber = true
+            }
+        },
+        computed: {
+            disableCards: function () {
+                return this.selectedCards === this.playerMatch.totalCards || this.gameEnded;
+            }
+            ,
+            gameEnded: function () {
+                return this.playerMatch && (this.playerMatch.victory !== null);
+            },
+            resultColor() {
+                return this.playerMatch.victory ? 'success' : 'error';
+            },
+            resultText() {
+                return this.playerMatch.victory ? 'You won!' : 'You lost!';
+            }
         }
-    };
+    }
+    ;
 </script>
 <style lang="scss">
     .game-content-divider {

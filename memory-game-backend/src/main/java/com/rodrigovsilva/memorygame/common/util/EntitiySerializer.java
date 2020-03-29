@@ -41,6 +41,7 @@ public class EntitiySerializer {
                 .player(this.toPlayerDTO(playerMatch.getPlayer()))//
                 .totalCards(playerMatch.getTotalCards())
                 .createdAt(playerMatch.getCreatedAt())
+                .victory(playerMatch.getVictory())
                 .build();
     }
 
@@ -71,6 +72,7 @@ public class EntitiySerializer {
                 .player(this.toPlayer(playerMatchDTO.getPlayer()))//
                 .totalCards(playerMatchDTO.getTotalCards())
                 .createdAt(playerMatchDTO.getCreatedAt())
+                .victory(playerMatchDTO.getVictory())
                 .build();
     }
 
@@ -83,6 +85,7 @@ public class EntitiySerializer {
     public MatchCardDTO toMatchCardDTO(MatchCard matchCard) {
         return MatchCardDTO.Builder.builder()//
                 .position(matchCard.getPosition()) //
+                .number(matchCard.getNumber())//
                 .build();
 
     }
@@ -97,6 +100,7 @@ public class EntitiySerializer {
 
         return MatchCard.Builder.builder()//
                 .position(matchCardDTO.getPosition())//
+                .number(matchCardDTO.getNumber())
                 .build();
     }
 }

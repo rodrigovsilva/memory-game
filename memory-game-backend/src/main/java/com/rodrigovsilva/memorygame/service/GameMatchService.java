@@ -1,5 +1,6 @@
 package com.rodrigovsilva.memorygame.service;
 
+import com.rodrigovsilva.memorygame.dto.GamePlayDTO;
 import com.rodrigovsilva.memorygame.dto.MatchCardDTO;
 import com.rodrigovsilva.memorygame.dto.PlayerDTO;
 import com.rodrigovsilva.memorygame.dto.PlayerMatchDTO;
@@ -38,10 +39,10 @@ public interface GameMatchService {
     PlayerMatchDTO createNewMatch(PlayerDTO playerDTO, Integer numberOfCards);
 
     /**
-     * Prepare and sort match cards.
+     * Prepare and match cards prepared.
      *
      * @param match match
-     * @return
+     * @return Match cards prepared
      */
     Set<MatchCardDTO> prepareMatchCards(PlayerMatch match);
 
@@ -60,6 +61,14 @@ public interface GameMatchService {
      * @return List of all player matches.
      */
     List<PlayerMatchDTO> listPlayerMatches(Player player);
+
+    /**
+     * Check cards of the game.
+     *
+     * @param gamePlayDTO Cards of the game
+     * @return Play match results.
+     */
+    GamePlayDTO checkCards(GamePlayDTO gamePlayDTO);
 
 
 }

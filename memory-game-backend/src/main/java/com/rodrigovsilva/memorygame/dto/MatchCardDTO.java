@@ -1,5 +1,7 @@
 package com.rodrigovsilva.memorygame.dto;
 
+import com.rodrigovsilva.memorygame.model.MatchCard;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -10,6 +12,8 @@ public class MatchCardDTO implements Comparable<MatchCardDTO>, Serializable {
 
     private Integer position;
 
+    private Integer number;
+
     public Integer getPosition() {
         return position;
     }
@@ -18,6 +22,13 @@ public class MatchCardDTO implements Comparable<MatchCardDTO>, Serializable {
         this.position = position;
     }
 
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
 
     @Override
     public int compareTo(MatchCardDTO matchCard) {
@@ -28,6 +39,7 @@ public class MatchCardDTO implements Comparable<MatchCardDTO>, Serializable {
 
     public static final class Builder {
         private Integer position;
+        private Integer number;
 
         private Builder() {
         }
@@ -41,10 +53,15 @@ public class MatchCardDTO implements Comparable<MatchCardDTO>, Serializable {
             return this;
         }
 
+        public Builder number(Integer number) {
+            this.number = number;
+            return this;
+        }
 
         public MatchCardDTO build() {
             MatchCardDTO matchCardDTO = new MatchCardDTO();
             matchCardDTO.setPosition(position);
+            matchCardDTO.setNumber(number);
             return matchCardDTO;
         }
     }
@@ -54,12 +71,13 @@ public class MatchCardDTO implements Comparable<MatchCardDTO>, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MatchCardDTO that = (MatchCardDTO) o;
-        return Objects.equals(getPosition(), that.getPosition());
+        return Objects.equals(getPosition(), that.getPosition()) &&
+                Objects.equals(getNumber(), that.getNumber());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPosition());
+        return Objects.hash(getPosition(), getNumber());
     }
 
 

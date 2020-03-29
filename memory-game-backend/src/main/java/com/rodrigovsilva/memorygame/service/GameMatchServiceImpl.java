@@ -1,9 +1,11 @@
 
 package com.rodrigovsilva.memorygame.service;
 
+import com.google.gson.Gson;
 import com.rodrigovsilva.memorygame.common.constant.AppConstants;
 import com.rodrigovsilva.memorygame.common.message.ExceptionMessages;
 import com.rodrigovsilva.memorygame.common.util.EntitiySerializer;
+import com.rodrigovsilva.memorygame.dto.GamePlayDTO;
 import com.rodrigovsilva.memorygame.dto.MatchCardDTO;
 import com.rodrigovsilva.memorygame.dto.PlayerDTO;
 import com.rodrigovsilva.memorygame.dto.PlayerMatchDTO;
@@ -14,6 +16,7 @@ import com.rodrigovsilva.memorygame.model.PlayerMatch;
 import com.rodrigovsilva.memorygame.repository.MatchCardRepository;
 import com.rodrigovsilva.memorygame.repository.PlayerMatchRepository;
 import com.rodrigovsilva.memorygame.repository.PlayerRepository;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,19 +67,21 @@ public class GameMatchServiceImpl implements GameMatchService {
     }
 
     @Override
-    public PlayerDTO createNewPlayer(PlayerDTO newPlayer) throws PlayerAlreadyExistsException {
+    public PlayerDTO createNewPlayer(final PlayerDTO newPlayer) throws PlayerAlreadyExistsException {
 
         Optional<Player> optionalExistingPlayer = playerRepository.findByName(newPlayer.getName());
 
         final PlayerDTO playerDTO = null;
-        optionalExistingPlayer.ifPresentOrElse(player -> {
-            throw new PlayerAlreadyExistsException(ExceptionMessages.PLAYER_ALREADY_EXISTS.getMessage(newPlayer.getName()));
-        }, () -> {
+        if (optionalExistingPlayer.isPresent()) {
+
+            return entitiySerializer.toPlayerDTO(optionalExistingPlayer.get());
+        } else {
             Player createdPlayer = playerRepository.save(Player.Builder.builder().id(newPlayer.getId()).name(newPlayer.getName()).build());
             newPlayer.setId(createdPlayer.getId());
-        });
 
-        return newPlayer;
+            return newPlayer;
+        }
+
     }
 
     @Override
@@ -147,6 +152,34 @@ public class GameMatchServiceImpl implements GameMatchService {
             return new ArrayList<PlayerMatchDTO>();
         }
 
+    }
+
+    @Override
+    public GamePlayDTO checkCards(GamePlayDTO gamePlayDTO) {
+
+        Optional<PlayerMatch> optionalPlayerMatch = playerMatchRepository.findById(gamePlayDTO.getPlayerMatch().getId());
+
+
+        optionalPlayerMatch.ifPresent(playerMatch -> {
+            List<MatchCard> positionOrderedByCardNumber = playerMatch.getMatchCards().stream().sorted((mc, mc1) -> mc.getNumber().compareTo(mc1.getNumber())).collect(Collectors.toList());
+
+            List<Integer> positions = positionOrderedByCardNumber.stream().map(matchCard -> matchCard.getPosition()).collect(Collectors.toList());
+
+            LOGGER.info("GAME ORDER: {}", new Gson().toJson(positions.toArray()));
+            LOGGER.info("GAME PLAY : {}", new Gson().toJson(gamePlayDTO.getSelectedCards().toArray()));
+            boolean result = Arrays.equals(positions.toArray(), gamePlayDTO.getSelectedCards().toArray());
+
+            gamePlayDTO.getPlayerMatch().setVictory(result);
+
+            PlayerMatch matchPlayed = optionalPlayerMatch.get();
+            matchPlayed.setVictory(result);
+
+            playerMatchRepository.save(matchPlayed);
+
+            LOGGER.info("RESULT : {}", result);
+        });
+
+        return gamePlayDTO;
     }
 
     @Override

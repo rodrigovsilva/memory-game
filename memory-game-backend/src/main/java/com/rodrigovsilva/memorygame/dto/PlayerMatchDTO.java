@@ -1,5 +1,6 @@
 package com.rodrigovsilva.memorygame.dto;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
 
@@ -38,6 +39,8 @@ public class PlayerMatchDTO implements Serializable {
 
     public Set<MatchCardDTO> matchCards;
 
+    public Boolean victory;
+
     public PlayerMatchDTO() {
         matchCards = new TreeSet<MatchCardDTO>((t, t1) -> t.getPosition().compareTo(t1.getPosition()));
     }
@@ -65,12 +68,21 @@ public class PlayerMatchDTO implements Serializable {
         }
     }
 
+    public Boolean getVictory() {
+        return victory;
+    }
+
+    public void setVictory(Boolean victory) {
+        this.victory = victory;
+    }
+
     public static final class Builder {
         private Long id;
         private PlayerDTO player;
         private Integer totalCards;
         private Calendar createdAt;
         public Set<MatchCardDTO> matchCards;
+        public Boolean victory;
 
         private Builder() {
         }
@@ -104,6 +116,11 @@ public class PlayerMatchDTO implements Serializable {
             return this;
         }
 
+        public Builder victory(Boolean victory) {
+            this.victory = victory;
+            return this;
+        }
+
         public PlayerMatchDTO build() {
             PlayerMatchDTO playerMatchDTO = new PlayerMatchDTO();
             playerMatchDTO.setId(id);
@@ -111,6 +128,7 @@ public class PlayerMatchDTO implements Serializable {
             playerMatchDTO.setTotalCards(totalCards);
             playerMatchDTO.setCreatedAt(createdAt);
             playerMatchDTO.setMatchCards(matchCards);
+            playerMatchDTO.setVictory(victory);
             return playerMatchDTO;
         }
     }
