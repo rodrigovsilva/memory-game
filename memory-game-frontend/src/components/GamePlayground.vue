@@ -19,16 +19,36 @@
                 <v-text-field v-model="form.player.name" label="Player Name"></v-text-field>
             </v-flex>
             <v-flex xs8 offset-xs2 class="text-left">
-                    <v-label>How many cards? &nbsp;</v-label>
-                    <v-btn-toggle v-model="form.totalCards" mandatory>
-                        <v-btn text v-for="cardOption in cardOptions" :key="cardOption" :value="cardOption">
-                            {{cardOption}}
-                        </v-btn>
-                    </v-btn-toggle>
+                <v-label>How many cards? &nbsp;</v-label>
+                <v-btn-toggle v-model="form.totalCards" mandatory>
+                    <v-btn text v-for="cardOption in cardOptions" :key="cardOption" :value="cardOption">
+                        {{cardOption}}
+                    </v-btn>
+                </v-btn-toggle>
             </v-flex>
             <br><br><br>
             <v-flex xs8 offset-xs2>
                 <v-btn color="primary" @click="createNewGame()">Create New Game</v-btn>
+            </v-flex>
+            <v-flex xs8 offset-xs2 v-if="this.playedGames" class="last-matches-container">
+                <v-card>
+                    <v-card-title>
+                        Last Matches:
+                        <v-spacer></v-spacer>
+                        <v-text-field
+                                v-model="search"
+                                append-icon="mdi-magnify"
+                                label="Search"
+                                single-line
+                                hide-details
+                        ></v-text-field>
+                    </v-card-title>
+                    <v-data-table
+                            :headers="headers"
+                            :items="playedGames"
+                            :search="search"
+                    ></v-data-table>
+                </v-card>
             </v-flex>
         </v-layout>
         <v-layout v-if="this.playerMatch">
@@ -80,7 +100,7 @@
 </template>
 
 <script>
-    import {CHECK_CARDS, CREATE_NEW_GAME} from "../store/action.type";
+    import {CHECK_CARDS, CREATE_NEW_GAME, LIST_PLAYED_GAMES} from "../store/action.type";
 
     export default {
         data: () => ({
@@ -90,13 +110,29 @@
                 },
                 totalCards: 4,
             },
+            playedGames: [],
             player: null,
             playerMatch: null,
             alert: null,
             selectedCards: [],
             showCardNumber: true,
-            cardOptions: [4, 8, 12]
+            cardOptions: [4, 8, 12],
+            search: '',
+            headers: [
+                {
+                    text: 'Player Name',
+                    align: 'start',
+                    sortable: false,
+                    value: 'player.name',
+                },
+                {text: 'Total Cards', value: 'totalCards'},
+                {text: 'Date', value: 'createdAt'},
+                {text: 'Result', value: 'victory'},
+            ]
         }),
+        mounted() {
+            this.loadLastGames();
+        },
         methods: {
             createNewGame() {
                 this.$store.dispatch(CREATE_NEW_GAME, this.form).then(() => {
@@ -118,10 +154,11 @@
                 this.$store.dispatch(CHECK_CARDS, gamePlay).then(() => {
                     this.player = this.$store.state.game.player;
                     this.playerMatch = this.$store.state.game.playerMatch;
-                    this.showCardNumber = true;
 
                 }).catch(error => {
                     this.alert = error.message;
+                }).finally(() => {
+                    this.clearGameFields();
                 });
             },
             resetGame() {
@@ -131,11 +168,25 @@
                         name: ''
                     },
                     totalCards: 4,
-                }, this.player = null,
+                }
+                this.player = null,
                     this.playerMatch = null,
                     this.alert = null,
-                    this.selectedCards = [],
+
+                    this.clearGameFields();
+                this.loadLastGames();
+            },
+            loadLastGames() {
+                this.$store.dispatch(LIST_PLAYED_GAMES, this.form).then(() => {
+                    this.playedGames = this.$store.state.game.playedGames;
+                }).catch(error => {
+                    this.alert = error.message;
+                });
+            },
+            clearGameFields() {
+                this.selectedCards = [],
                     this.showCardNumber = true
+
             }
         },
         computed: {
@@ -176,5 +227,8 @@
 
     }
 
+    .last-matches-container {
+        margin-top: 2rem;
+    }
 
 </style>

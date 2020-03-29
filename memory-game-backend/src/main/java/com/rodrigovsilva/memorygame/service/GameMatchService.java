@@ -57,10 +57,9 @@ public interface GameMatchService {
     /**
      * List all player matches
      *
-     * @param player Player
      * @return List of all player matches.
      */
-    List<PlayerMatchDTO> listPlayerMatches(Player player);
+    List<PlayerMatchDTO> listPlayerMatches();
 
     /**
      * Check cards of the game.

@@ -27,5 +27,10 @@ export default {
         return axios.post(`${API_URL}/game/check`, gamePlay, {
             headers: HEADERS
         });
-    }
+    },
+    listPlayedGames() {
+        return axios.get(`${API_URL}/game`, {
+            headers: HEADERS
+        });
+    },
 };

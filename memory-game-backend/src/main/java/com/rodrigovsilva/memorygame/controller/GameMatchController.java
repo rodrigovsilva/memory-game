@@ -49,9 +49,9 @@ public class GameMatchController {
         ResponseEntity<Object> responseEntity = null;
 
         try {
-            //List<PlayerMatchDTO> playerMatches = gameMatchService.
+            List<PlayerMatchDTO> playerMatches = gameMatchService.listPlayerMatches();
 
-            responseEntity = new ResponseEntity<>("get game", HttpStatus.CREATED);
+            responseEntity = new ResponseEntity<>(playerMatches, HttpStatus.OK);
 
         } catch (Exception e) {
             LOGGER.error(e.getLocalizedMessage(), e);

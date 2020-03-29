@@ -1,12 +1,13 @@
 import GameService from '../../services/game.service';
-import {CHECK_CARDS, CREATE_NEW_GAME} from '../action.type';
-import {CARDS_CHECKED, GAME_CREATED} from '../mutation.type';
+import {CHECK_CARDS, CREATE_NEW_GAME, LIST_PLAYED_GAMES} from '../action.type';
+import {CARDS_CHECKED, GAME_CREATED, PLAYED_GAMES_LOADED} from '../mutation.type';
 
 import Vue from 'vue';
 
 export const state = {
     player: {},
-    playerMatch: {}
+    playerMatch: {},
+    playedGames: []
 };
 
 export const actions = {
@@ -38,6 +39,20 @@ export const actions = {
             });
     },
 
+    [LIST_PLAYED_GAMES]({commit}, playerMatch) {
+        return GameService.listPlayedGames()
+            .then(response => {
+                if(response.data.errors) {
+                    throw new Error(response.data.details)
+                } else if (response.data) {
+                    commit(PLAYED_GAMES_LOADED, response.data);
+                }
+            })
+            .catch((error) => {
+                throw new Error(error.data.details);
+            });
+    },
+
 
 };
 
@@ -52,6 +67,10 @@ export const mutations = {
 
     [CARDS_CHECKED](currentState, gamePlay) {
         Vue.set(currentState, 'playerMatch', gamePlay.playerMatch);
+    },
+
+    [PLAYED_GAMES_LOADED](currentState, playedGames) {
+        Vue.set(currentState, 'playedGames', playedGames);
     },
 };
 

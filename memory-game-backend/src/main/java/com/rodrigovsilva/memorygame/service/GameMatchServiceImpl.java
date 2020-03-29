@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * All game match service methods implementations.
@@ -126,32 +127,20 @@ public class GameMatchServiceImpl implements GameMatchService {
     }
 
     @Override
-    public List<PlayerMatchDTO> listPlayerMatches(Player player) {
+    public List<PlayerMatchDTO> listPlayerMatches() {
 
-        Optional<List<PlayerMatch>> optionalPlayerMatches = playerMatchRepository.findAllByPlayerId(player.getId());
+        Iterable<PlayerMatch> itPlayerMatches = playerMatchRepository.findAll();
 
         // convert all player matches model to dto
-        if (optionalPlayerMatches.isPresent()) {
-            List<PlayerMatch> playerMatches = optionalPlayerMatches.get();
+        if (itPlayerMatches != null) {
 
-            return playerMatches.stream().map(playerMatch -> {
-                PlayerDTO player1 = PlayerDTO.Builder.builder()//
-                        .id(playerMatch.getPlayer().getId()) //
-                        .name(playerMatch.getPlayer().getName())//
-                        .build();
-
-                return PlayerMatchDTO.Builder.builder()//
-                        .id(playerMatch.getId())//
-                        .player(player1)//
-                        .totalCards(playerMatch.getTotalCards())
-                        .createdAt(playerMatch.getCreatedAt())
-                        .build();
+            return StreamSupport.stream(itPlayerMatches.spliterator(), false).map(playerMatch -> {
+                return entitiySerializer.toPlayerMatchDTO(playerMatch);
             }).collect(Collectors.toList());
 
         } else {
             return new ArrayList<PlayerMatchDTO>();
         }
-
     }
 
     @Override
