@@ -1,15 +1,14 @@
 package com.rodrigovsilva.memorygame.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Data transfer object with match cards information
  */
-public class MatchCardDTO implements Serializable {
+public class MatchCardDTO implements Comparable<MatchCardDTO>, Serializable {
 
     private Integer position;
-
-    private Integer number;
 
     public Integer getPosition() {
         return position;
@@ -19,18 +18,16 @@ public class MatchCardDTO implements Serializable {
         this.position = position;
     }
 
-    public Integer getNumber() {
-        return number;
-    }
 
-    public void setNumber(Integer number) {
-        this.number = number;
+    @Override
+    public int compareTo(MatchCardDTO matchCard) {
+        if (matchCard == null) return -1;
+        return Integer.compare(this.getPosition(), matchCard.getPosition());
     }
 
 
     public static final class Builder {
         private Integer position;
-        private Integer number;
 
         private Builder() {
         }
@@ -44,16 +41,26 @@ public class MatchCardDTO implements Serializable {
             return this;
         }
 
-        public Builder number(Integer number) {
-            this.number = number;
-            return this;
-        }
 
         public MatchCardDTO build() {
             MatchCardDTO matchCardDTO = new MatchCardDTO();
             matchCardDTO.setPosition(position);
-            matchCardDTO.setNumber(number);
             return matchCardDTO;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MatchCardDTO that = (MatchCardDTO) o;
+        return Objects.equals(getPosition(), that.getPosition());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPosition());
+    }
+
+
 }

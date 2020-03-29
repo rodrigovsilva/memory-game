@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
-import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,10 +49,11 @@ public class GameMatchServiceImpl implements GameMatchService {
     EntitiySerializer entitiySerializer;
 
     @Autowired
-    public GameMatchServiceImpl(PlayerRepository playerRepository, PlayerMatchRepository playerMatchRepository, MatchCardRepository matchCardRepository) {
+    public GameMatchServiceImpl(PlayerRepository playerRepository, PlayerMatchRepository playerMatchRepository, MatchCardRepository matchCardRepository, EntitiySerializer entitiySerializer) {
         this.playerRepository = playerRepository;
         this.playerMatchRepository = playerMatchRepository;
         this.matchCardRepository = matchCardRepository;
+        this.entitiySerializer = entitiySerializer;
     }
 
     /**
@@ -98,26 +98,22 @@ public class GameMatchServiceImpl implements GameMatchService {
 
         // prepare match data
         PlayerMatchDTO newMatch = entitiySerializer.toPlayerMatchDTO(playerMatch);
-        newMatch.setMatchCards(this.prepareMatchCards(playerMatch));
+        newMatch.setMatchCards(prepareMatchCards(playerMatch));
 
         return newMatch;
     }
 
     @Override
-    public List<MatchCardDTO> prepareMatchCards(PlayerMatch match) {
+    public Set<MatchCardDTO> prepareMatchCards(PlayerMatch match) {
 
-        SecureRandom secureRandom = new SecureRandom();
-
-        Map<Integer, Integer> numbers = new HashMap<>();
-
-        List<MatchCard> matchCardList = this.sortMatchCards(match.getTotalCards());
+        Set<MatchCard> matchCardList = this.sortMatchCards(match);
 
         matchCardRepository.saveAll(matchCardList);
 
         // convert cards from model to dto
-        List<MatchCardDTO> preparedCards = matchCardList.stream().map(matchCard -> {
+        Set<MatchCardDTO> preparedCards = matchCardList.stream().map(matchCard -> {
             return entitiySerializer.toMatchCardDTO(matchCard);
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
 
         LOGGER.info("preparedCards {}", preparedCards);
 
@@ -154,25 +150,26 @@ public class GameMatchServiceImpl implements GameMatchService {
     }
 
     @Override
-    public List<MatchCard> sortMatchCards(Integer totalCards) {
-        SecureRandom secureRandom = new SecureRandom();
+    public Set<MatchCard> sortMatchCards(PlayerMatch playerMatch) {
+
+        Random random = new Random();
 
         Map<Integer, Integer> numbers = new HashMap<>();
 
-        List<MatchCard> matchCardList = new ArrayList<>();
+        Set<MatchCard> matchCardList = new TreeSet<>();
 
         // build cards map by position
-        for (int position = 0; position < totalCards; position++) {
+        for (int position = 0; position < playerMatch.getTotalCards(); position++) {
 
-            Integer newNumber = secureRandom.nextInt(secureRandom.nextInt(AppConstants.MAX_CARD_NUMBER));
+            Integer newNumber = random.ints(0, AppConstants.MAX_CARD_NUMBER).findAny().getAsInt();
 
             while (numbers.containsValue(newNumber)) {
-                newNumber = secureRandom.nextInt(secureRandom.nextInt(AppConstants.MAX_CARD_NUMBER));
+                newNumber = random.ints(0, AppConstants.MAX_CARD_NUMBER).findAny().getAsInt();
             }
 
             numbers.put(position, newNumber);
 
-            matchCardList.add(MatchCard.Builder.builder().position(position).number(newNumber).build());
+            matchCardList.add(MatchCard.Builder.builder().position(position).number(newNumber).playerMatch(playerMatch).build());
 
         }
 

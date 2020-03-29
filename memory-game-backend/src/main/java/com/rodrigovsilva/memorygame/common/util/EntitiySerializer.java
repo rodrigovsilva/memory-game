@@ -83,7 +83,6 @@ public class EntitiySerializer {
     public MatchCardDTO toMatchCardDTO(MatchCard matchCard) {
         return MatchCardDTO.Builder.builder()//
                 .position(matchCard.getPosition()) //
-                .number(matchCard.getNumber())//
                 .build();
 
     }
@@ -98,7 +97,6 @@ public class EntitiySerializer {
 
         return MatchCard.Builder.builder()//
                 .position(matchCardDTO.getPosition())//
-                .number(matchCardDTO.getNumber())
                 .build();
     }
 }

@@ -13,10 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(classes = MemoryGameApplication.class)
 public class MemoryGameApplicationTests {
 
-    @Autowired
-    private TestEntityManager entityManager;
-
-
     @Test
     public void contextLoads() {
     }

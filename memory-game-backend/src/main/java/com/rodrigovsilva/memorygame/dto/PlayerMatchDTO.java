@@ -1,12 +1,12 @@
 package com.rodrigovsilva.memorygame.dto;
 
-import java.util.Calendar;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Data transfer object for all player matches.
  */
-public class PlayerMatchDTO {
+public class PlayerMatchDTO implements Serializable {
 
     private Long id;
 
@@ -36,7 +36,11 @@ public class PlayerMatchDTO {
         return totalCards;
     }
 
-    public List<MatchCardDTO> matchCards;
+    public Set<MatchCardDTO> matchCards;
+
+    public PlayerMatchDTO() {
+        matchCards = new TreeSet<MatchCardDTO>((t, t1) -> t.getPosition().compareTo(t1.getPosition()));
+    }
 
     public void setTotalCards(Integer totalCards) {
         this.totalCards = totalCards;
@@ -50,12 +54,15 @@ public class PlayerMatchDTO {
         this.createdAt = createdAt;
     }
 
-    public List<MatchCardDTO> getMatchCards() {
+    public Set<MatchCardDTO> getMatchCards() {
         return matchCards;
     }
 
-    public void setMatchCards(List<MatchCardDTO> matchCards) {
-        this.matchCards = matchCards;
+    public void setMatchCards(Set<MatchCardDTO> matchCards) {
+        this.matchCards = new TreeSet<>((t, t1) -> t.getPosition().compareTo(t1.getPosition()));
+        if (matchCards != null) {
+            this.matchCards.addAll(matchCards);
+        }
     }
 
     public static final class Builder {
@@ -63,7 +70,7 @@ public class PlayerMatchDTO {
         private PlayerDTO player;
         private Integer totalCards;
         private Calendar createdAt;
-        public List<MatchCardDTO> matchCards;
+        public Set<MatchCardDTO> matchCards;
 
         private Builder() {
         }
@@ -92,7 +99,7 @@ public class PlayerMatchDTO {
             return this;
         }
 
-        public Builder matchCards(List<MatchCardDTO> matchCards) {
+        public Builder matchCards(Set<MatchCardDTO> matchCards) {
             this.matchCards = matchCards;
             return this;
         }

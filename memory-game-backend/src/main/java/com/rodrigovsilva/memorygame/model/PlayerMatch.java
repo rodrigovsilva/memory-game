@@ -1,12 +1,16 @@
 package com.rodrigovsilva.memorygame.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rodrigovsilva.memorygame.dto.MatchCardDTO;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This entity represents all information about a player match.
@@ -14,6 +18,9 @@ import java.util.List;
  * @author Rodrigo Silva
  */
 @Entity
+@EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties(value = {"createdAt"},
+        allowGetters = true)
 @Table(name = "player_match")
 public class PlayerMatch {
 
@@ -31,18 +38,17 @@ public class PlayerMatch {
     @Column(name = "total_cards")
     private Integer totalCards;
 
-    @NotNull
     @Column(name = "created_at", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Calendar createdAt;
 
-    @OneToMany(targetEntity = MatchCard.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = MatchCard.class, fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "player_match_id", foreignKey = @ForeignKey(name = "FK_MATCH_CARD_TO_PLAYER_MATCH"))
-    @NotNull
-    public List<MatchCard> matchCards;
+    public Set<MatchCard> matchCards;
 
     public PlayerMatch() {
+        this.matchCards = new TreeSet<>((t, t1) -> t.getPosition().compareTo(t1.getPosition()));
     }
 
     public Long getId() {
@@ -77,8 +83,19 @@ public class PlayerMatch {
         this.createdAt = createdAt;
     }
 
+    public Set<MatchCard> getMatchCards() {
+        return matchCards;
+    }
+
+    public void setMatchCards(Set<MatchCard> matchCards) {
+        this.matchCards = new TreeSet<>((t, t1) -> t.getPosition().compareTo(t1.getPosition()));
+        if (matchCards != null) {
+            this.matchCards.addAll(matchCards);
+        }
+    }
 
     public static final class Builder {
+        public Set<MatchCard> matchCards;
         private Long id;
         private Player player;
         private Integer totalCards;
@@ -111,12 +128,18 @@ public class PlayerMatch {
             return this;
         }
 
+        public Builder matchCards(Set<MatchCard> matchCards) {
+            this.matchCards = matchCards;
+            return this;
+        }
+
         public PlayerMatch build() {
             PlayerMatch playerMatch = new PlayerMatch();
             playerMatch.setId(id);
             playerMatch.setPlayer(player);
             playerMatch.setTotalCards(totalCards);
             playerMatch.setCreatedAt(createdAt);
+            playerMatch.setMatchCards(matchCards);
             return playerMatch;
         }
     }
