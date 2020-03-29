@@ -18,6 +18,15 @@
             <v-flex xs8 offset-xs2>
                 <v-text-field v-model="form.player.name" label="Player Name"></v-text-field>
             </v-flex>
+            <v-flex xs8 offset-xs2 class="text-left">
+                    <v-label>How many cards? &nbsp;</v-label>
+                    <v-btn-toggle v-model="form.totalCards" mandatory>
+                        <v-btn text v-for="cardOption in cardOptions" :key="cardOption" :value="cardOption">
+                            {{cardOption}}
+                        </v-btn>
+                    </v-btn-toggle>
+            </v-flex>
+            <br><br><br>
             <v-flex xs8 offset-xs2>
                 <v-btn color="primary" @click="createNewGame()">Create New Game</v-btn>
             </v-flex>
@@ -85,7 +94,8 @@
             playerMatch: null,
             alert: null,
             selectedCards: [],
-            showCardNumber: true
+            showCardNumber: true,
+            cardOptions: [4, 8, 12]
         }),
         methods: {
             createNewGame() {
