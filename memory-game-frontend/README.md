@@ -1,8 +1,6 @@
-# Vuetify-Starter
+# memory-game-frontend
 
-Learning or Starter Project with Vuex, Vue-router with a simple example there.
-
-You can find on-going update at: https://github.com/osify/vuetify-starter
+Memory Game Frontend for Lepaya's challenge 
 
 ## Project setup
 ```
