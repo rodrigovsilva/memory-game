@@ -89,11 +89,7 @@ public class GameMatchServiceTests {
         final PlayerDTO playerDTO = PlayerDTO.Builder.builder().id(id).name(name).build();
 
         // creating user
-        given(playerRepository.findByName(name)).willReturn(Optional.of(player));
-        Assertions.assertThrows(PlayerAlreadyExistsException.class, () -> {
-            gameMatchService.createNewPlayer(playerDTO);
-
-        });
+        gameMatchService.createNewPlayer(playerDTO);
 
         verify(playerRepository, never()).save(any(Player.class));
     }

@@ -14,35 +14,47 @@ export const actions = {
     [CREATE_NEW_GAME]({commit}, playerMatch) {
         return GameService.createNewGame(playerMatch)
             .then(response => {
-                if(response.data.errors) {
-                    throw new Error(response.data.details)
-                } else if (response.data) {
-                    commit(GAME_CREATED, response.data);
+                if (response) {
+                    if (response.data.errors) {
+                        throw new Error(response.data.details)
+                    } else if (response.data) {
+                        commit(GAME_CREATED, response.data);
+                    }
                 }
             })
             .catch((error) => {
-                throw new Error(error.data.details);
+                if (error && error.data) {
+                    throw new Error(error.data.details);
+                } else {
+                    throw new Error(error);
+                }
             });
     },
 
     [CHECK_CARDS]({commit}, playerMatch) {
         return GameService.checkCards(playerMatch)
             .then(response => {
-                if(response.data.errors) {
-                    throw new Error(response.data.details)
-                } else if (response.data) {
-                    commit(CARDS_CHECKED, response.data);
+                if (response) {
+                    if (response.data.errors) {
+                        throw new Error(response.data.details)
+                    } else if (response.data) {
+                        commit(CARDS_CHECKED, response.data);
+                    }
                 }
             })
             .catch((error) => {
-                throw new Error(error.data.details);
+                if (error && error.data) {
+                    throw new Error(error.data.details);
+                } else {
+                    throw new Error(error);
+                }
             });
     },
 
     [LIST_PLAYED_GAMES]({commit}) {
         return GameService.listPlayedGames()
             .then(response => {
-                if(response) {
+                if (response) {
                     if (response.data.errors) {
                         throw new Error(response.data.details)
                     } else if (response.data) {
@@ -51,7 +63,11 @@ export const actions = {
                 }
             })
             .catch((error) => {
-                throw new Error(error.data.details);
+                if (error && error.data) {
+                    throw new Error(error.data.details);
+                } else {
+                    throw new Error(error);
+                }
             });
     },
 
