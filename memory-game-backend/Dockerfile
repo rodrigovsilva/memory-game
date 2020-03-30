@@ -11,12 +11,12 @@ COPY . .
 # build the app
 RUN mvn clean install -DskipTests
 
-# copy app jar
-COPY target/*.jar app.jar
+# rename app jar
+RUN mv ./target/*jar app.jar
 
+#define environment java opts
 ENV JAVA_OPTS="-Xms256m -Xmx256m"
 #ENV SPRING_PROFILE="stag"
 
 ENTRYPOINT exec java $JAVA_OPTS \
- -Dspring.profiles.active=$SPRING_PROFILE \
  -jar app.jar

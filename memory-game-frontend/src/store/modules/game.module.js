@@ -39,13 +39,15 @@ export const actions = {
             });
     },
 
-    [LIST_PLAYED_GAMES]({commit}, playerMatch) {
+    [LIST_PLAYED_GAMES]({commit}) {
         return GameService.listPlayedGames()
             .then(response => {
-                if(response.data.errors) {
-                    throw new Error(response.data.details)
-                } else if (response.data) {
-                    commit(PLAYED_GAMES_LOADED, response.data);
+                if(response) {
+                    if (response.data.errors) {
+                        throw new Error(response.data.details)
+                    } else if (response.data) {
+                        commit(PLAYED_GAMES_LOADED, response.data);
+                    }
                 }
             })
             .catch((error) => {
