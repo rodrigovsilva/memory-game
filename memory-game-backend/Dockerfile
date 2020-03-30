@@ -9,7 +9,7 @@ WORKDIR /app
 COPY . .
 
 # build the app
-RUN mvn clean install
+RUN mvn clean install -DskipTests
 
 # rename app jar
 RUN mv ./target/*jar app.jar
