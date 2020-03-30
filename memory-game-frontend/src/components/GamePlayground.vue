@@ -9,10 +9,10 @@
                     xs12
                     mb-5
             >
-                <h2 class="headline font-weight-bold mb-3">Please enter your information to start a new game</h2>
-                <v-alert v-if="alert" color="pink" dark border="top" icon="mdi-keyboard-settings"
+                <h2 class="headline font-weight-bold mb-3">Please enter your information to start a new game {{alert}}</h2>
+                <v-alert v-model="alert" color="pink" dark border="top" icon="mdi-keyboard-settings"
                          transition="scale-transition" dismissible>
-                    <h2>{{this.alert}}</h2>
+                    <h2>{{this.alertMessage}}</h2>
                 </v-alert>
             </v-flex>
             <v-flex xs8 offset-xs2>
@@ -113,7 +113,8 @@
             playedGames: [],
             player: null,
             playerMatch: null,
-            alert: null,
+            alert: false,
+            alertMessage: null,
             selectedCards: [],
             showCardNumber: true,
             cardOptions: [4, 8, 12],
@@ -139,7 +140,7 @@
                     this.playerMatch = this.$store.state.game.playerMatch;
 
                 }).catch(error => {
-                    this.alert = error.message;
+                    this.showAlert(error.message);
                 });
             },
             playGame() {
@@ -155,7 +156,8 @@
                     this.playerMatch = this.$store.state.game.playerMatch;
 
                 }).catch(error => {
-                    this.alert = error.message;
+                    this.showAlert(error.message);
+
                 }).finally(() => {
                     this.clearGameFields();
                 });
@@ -171,6 +173,7 @@
                 this.player = null,
                     this.playerMatch = null,
                     this.alert = null,
+                    this.alertMessage = null,
 
                     this.clearGameFields();
                 this.loadLastGames();
@@ -179,13 +182,17 @@
                 this.$store.dispatch(LIST_PLAYED_GAMES).then(() => {
                     this.playedGames = this.$store.state.game.playedGames;
                 }).catch(error => {
-                    this.alert = error.message;
+                    this.showAlert(error.message);
                 });
             },
             clearGameFields() {
                 this.selectedCards = [],
                     this.showCardNumber = true
 
+            },
+            showAlert(message){
+                this.alertMessage = message;
+                this.alert = true;
             }
         },
         computed: {
