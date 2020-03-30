@@ -1,0 +1,19 @@
+version: '2.3'
+services:
+  web:
+    container_name: memory-game-frontend
+    build: memory-game-frontend/.
+    ports:
+      - "8080:8080"
+    networks:
+      - memory-game-network
+  service:
+    container_name: memory-game-backend
+    build: memory-game-backend/.
+    ports:
+      - "8081:8081"
+    networks:
+      - memory-game-network
+networks:
+  memory-game-network:
+    external: true
