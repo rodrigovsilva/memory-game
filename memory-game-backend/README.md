@@ -14,5 +14,3 @@ We are developing using the [Classic Way](https://www.petrikainulainen.net/softw
 **The repository layer** is the lowest layer of a web application. It is responsible for communicating with the data storage.
 
 ![alt text](http://www.petrikainulainen.net/wp-content/uploads/spring-web-app-architecture.png)
-
-## Running in Development
