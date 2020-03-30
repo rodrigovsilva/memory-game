@@ -6,7 +6,7 @@ Vue.use(Router);
 
 export default new Router({
   linkActiveClass: 'active',
-  base: '/game/',
+  base: '/',
   routes: [
     {
       path: '/',
