@@ -176,7 +176,7 @@
                 this.loadLastGames();
             },
             loadLastGames() {
-                this.$store.dispatch(LIST_PLAYED_GAMES, this.form).then(() => {
+                this.$store.dispatch(LIST_PLAYED_GAMES).then(() => {
                     this.playedGames = this.$store.state.game.playedGames;
                 }).catch(error => {
                     this.alert = error.message;
