@@ -30,7 +30,7 @@
             <v-flex xs8 offset-xs2>
                 <v-btn color="primary" @click="createNewGame()">Create New Game</v-btn>
             </v-flex>
-            <v-flex xs8 offset-xs2 v-if="this.playedGames" class="last-matches-container">
+            <v-flex xs8 offset-xs2 v-if="playedGames" class="last-matches-container">
                 <v-card>
                     <v-card-title>
                         Last Matches:
@@ -45,7 +45,7 @@
                     </v-card-title>
                     <v-data-table
                             :headers="headers"
-                            :items="playedGames"
+                            :items="playedGamesFormatted"
                             :search="search"
                     ></v-data-table>
                 </v-card>
@@ -122,12 +122,11 @@
                 {
                     text: 'Player Name',
                     align: 'start',
-                    sortable: false,
-                    value: 'player.name',
+                    value: 'name',
                 },
                 {text: 'Total Cards', value: 'totalCards'},
-                {text: 'Date', value: 'createdAt'},
-                {text: 'Result', value: 'victory'},
+                {text: 'Date', value: 'gameDate'},
+                {text: 'Result', value: 'result'},
             ]
         }),
         mounted() {
@@ -202,6 +201,17 @@
             },
             resultText() {
                 return this.playerMatch.victory ? 'You won!' : 'You lost!';
+            },
+            playedGamesFormatted(){
+                console.log('his.playedGames', this.playedGames)
+                return this.playedGames ? this.playedGames.map((pg)=>{
+                    return {
+                        name: pg.player.name,
+                        totalCards: pg.totalCards,
+                        gameDate: this.$moment(pg.createdAt).format('D MMM YYYY HH:mm'),
+                        result: pg.victory ? 'WON' : 'LOST'
+                    }
+                }): [];
             }
         }
     }
