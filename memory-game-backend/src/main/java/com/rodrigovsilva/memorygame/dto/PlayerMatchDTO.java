@@ -1,17 +1,19 @@
 package com.rodrigovsilva.memorygame.dto;
 
-import java.util.Calendar;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Data transfer object for all player matches.
  */
-public class PlayerMatchDTO {
+public class PlayerMatchDTO implements Serializable {
 
     private Long id;
 
     private PlayerDTO player;
 
-    private Long totalCards;
+    private Integer totalCards;
 
     private Calendar createdAt;
 
@@ -31,11 +33,19 @@ public class PlayerMatchDTO {
         this.player = player;
     }
 
-    public Long getTotalCards() {
+    public Integer getTotalCards() {
         return totalCards;
     }
 
-    public void setTotalCards(Long totalCards) {
+    public Set<MatchCardDTO> matchCards;
+
+    public Boolean victory;
+
+    public PlayerMatchDTO() {
+        matchCards = new TreeSet<MatchCardDTO>((t, t1) -> t.getPosition().compareTo(t1.getPosition()));
+    }
+
+    public void setTotalCards(Integer totalCards) {
         this.totalCards = totalCards;
     }
 
@@ -47,39 +57,67 @@ public class PlayerMatchDTO {
         this.createdAt = createdAt;
     }
 
-    /**
-     * Inner builder for player matches.
-     */
-    public static final class PlayerMatchDTOBuilder {
+    public Set<MatchCardDTO> getMatchCards() {
+        return matchCards;
+    }
+
+    public void setMatchCards(Set<MatchCardDTO> matchCards) {
+        this.matchCards = new TreeSet<>((t, t1) -> t.getPosition().compareTo(t1.getPosition()));
+        if (matchCards != null) {
+            this.matchCards.addAll(matchCards);
+        }
+    }
+
+    public Boolean getVictory() {
+        return victory;
+    }
+
+    public void setVictory(Boolean victory) {
+        this.victory = victory;
+    }
+
+    public static final class Builder {
         private Long id;
         private PlayerDTO player;
-        private Long totalCards;
+        private Integer totalCards;
         private Calendar createdAt;
+        public Set<MatchCardDTO> matchCards;
+        public Boolean victory;
 
-        private PlayerMatchDTOBuilder() {
+        private Builder() {
         }
 
-        public static PlayerMatchDTOBuilder builder() {
-            return new PlayerMatchDTOBuilder();
+        public static Builder builder() {
+            return new Builder();
         }
 
-        public PlayerMatchDTOBuilder withId(Long id) {
+        public Builder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public PlayerMatchDTOBuilder withPlayer(PlayerDTO player) {
+        public Builder player(PlayerDTO player) {
             this.player = player;
             return this;
         }
 
-        public PlayerMatchDTOBuilder withTotalCards(Long totalCards) {
+        public Builder totalCards(Integer totalCards) {
             this.totalCards = totalCards;
             return this;
         }
 
-        public PlayerMatchDTOBuilder withCreatedAt(Calendar createdAt) {
+        public Builder createdAt(Calendar createdAt) {
             this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder matchCards(Set<MatchCardDTO> matchCards) {
+            this.matchCards = matchCards;
+            return this;
+        }
+
+        public Builder victory(Boolean victory) {
+            this.victory = victory;
             return this;
         }
 
@@ -89,6 +127,8 @@ public class PlayerMatchDTO {
             playerMatchDTO.setPlayer(player);
             playerMatchDTO.setTotalCards(totalCards);
             playerMatchDTO.setCreatedAt(createdAt);
+            playerMatchDTO.setMatchCards(matchCards);
+            playerMatchDTO.setVictory(victory);
             return playerMatchDTO;
         }
     }

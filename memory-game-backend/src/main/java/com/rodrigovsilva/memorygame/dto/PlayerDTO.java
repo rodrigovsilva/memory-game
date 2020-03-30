@@ -10,7 +10,6 @@ public class PlayerDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
     private String name;
 
     public Long getId() {

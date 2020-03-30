@@ -2,3 +2,4 @@
 memory-game-backend/target
 memory-game-backend/.idea
 memory-game-backend/logs
+memory-game-backend/target/classes
