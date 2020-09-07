@@ -13,9 +13,7 @@ import java.util.ResourceBundle;
  */
 public enum AppMessages {
 
-    DELETE_SUCCESS("app.quickreply.delete_success"),
-
-    HIT_COUNT_SUCCESS("app.quickreply.hit_count_success");
+    ACTION_SUCCESS("app.action.success");
 
     private static ResourceBundle bundle;
 
